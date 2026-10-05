@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神明加持 · 網頁修煉錄 | 廟會作品集入口網站</title>
+    <!-- Google Fonts 傳統書法與經典繁體字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --temple-red: #8b0000;
+            --temple-bright-red: #c0392b;
+            --gold-main: #f1c40f;
+            --gold-light: #ffeaa7;
+            --gold-dark: #d4ac0d;
+            --bg-dark: #120507;
+            --bg-card: #1f0b0e;
+            --text-light: #fef5e7;
+            --locked-gray: #4a4a4a;
+            --locked-bg: #222225;
+            --border-gold: linear-gradient(135deg, #ffeaa7, #d4ac0d, #f39c12, #ffeaa7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Serif TC', 'PMingLiU', serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% 20%, #4a0d13 0%, #120507 70%),
+                radial-gradient(circle at 10% 90%, rgba(192, 57, 43, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(241, 196, 15, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* 背景金輝飄浮粒子效果 */
+        .sparkles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .sparkle {
+            position: absolute;
+            background: radial-gradient(circle, var(--gold-light) 0%, rgba(241, 196, 15, 0) 70%);
+            border-radius: 50%;
+            animation: floatSparkle linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatSparkle {
+            0% {
+                transform: translateY(100vh) scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 30px 20px 60px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 頂部宮廟對聯標語 */
+        .couplet-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: var(--gold-main);
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px rgba(241, 196, 15, 0.5);
+        }
+
+        .couplet-banner .cloud-icon {
+            font-size: 1.5rem;
+            animation: sway 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes sway {
+            0% { transform: translateY(0) rotate(-5deg); }
+            100% { transform: translateY(-5deg) rotate(5deg); }
+        }
+
+        /* 大頭貼與個人資訊區 */
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+        }
+
+        /* 神明加持金光光暈 */
+        .avatar-aura {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #f1c40f, #e74c3c, #f39c12, #e67e22, #f1c40f);
+            animation: rotateAura 6s linear infinite;
+            filter: blur(8px);
+            opacity: 0.75;
+        }
+
+        @keyframes rotateAura {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .avatar-img-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(145deg, #ffeaa7, #b32428);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 2;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1a0507;
+            background-color: #333;
+        }
+
+        /* 宮燈燈籠裝飾 (左右) */
+        .lantern {
+            position: absolute;
+            top: 10px;
+            width: 45px;
+            height: 60px;
+            background: linear-gradient(180deg, #e74c3c, #900c3f);
+            border-radius: 10px/20px;
+            border: 2px solid var(--gold-main);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.8), inset 0 0 10px rgba(255, 234, 167, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-light);
+            font-weight: bold;
+            font-size: 1.1rem;
+            animation: lanternSwinging 2.5s ease-in-out infinite alternate;
+        }
+
+        .lantern::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            width: 8px;
+            height: 12px;
+            background: var(--gold-main);
+            border-radius: 2px;
+        }
+
+        .lantern-left {
+            left: -70px;
+            transform-origin: top center;
+        }
+
+        .lantern-right {
+            right: -70px;
+            transform-origin: top center;
+            animation-delay: -1.25s;
+        }
+
+        @keyframes lanternSwinging {
+            0% { transform: rotate(-8deg); }
+            100% { transform: rotate(8deg); }
+        }
+
+        .site-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(180deg, #fff2a3 0%, #f1c40f 50%, #d4ac0d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 15px rgba(180, 40, 40, 0.6);
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+
+        .site-subtitle {
+            font-size: 1rem;
+            color: #d0c0b0;
+            letter-spacing: 2px;
+        }
+
+        .student-info {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 16px;
+            background: rgba(139, 0, 0, 0.6);
+            border: 1px solid var(--gold-main);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--gold-light);
+        }
+
+        /* 16 關卡按鈕網格結構 */
+        .quest-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* 響應式斷點設計 */
+        @media (max-width: 1024px) {
+            .quest-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quest-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            .site-title {
+                font-size: 1.8rem;
+            }
+            .lantern {
+                display: none; /* 手機版隱藏左右燈籠避免擠壓 */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quest-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
+        /* 卡卡按鈕通用風格 */
+        .quest-card {
+            position: relative;
+            height: 120px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 已解鎖 (Unlocked) 關卡樣式 */
+        .quest-card.unlocked {
+            background: linear-gradient(145deg, #2c0a0e 0%, #1a0507 100%);
+            border: 2px solid #f1c40f;
+            cursor: pointer;
+        }
+
+        .quest-card.unlocked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 234, 167, 0.25), transparent);
+            transition: left 0.7s ease;
+        }
+
+        /* 懸停 (Hover) 動畫特效 */
+        .quest-card.unlocked:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #fff2a3;
+            box-shadow: 0 12px 25px rgba(241, 196, 15, 0.35), 0 0 15px rgba(192, 57, 43, 0.5);
+        }
+
+        .quest-card.unlocked:hover::before {
+            left: 100%;
+        }
+
+        /* 關卡頭部標籤 */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .week-badge {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .unlocked .week-badge {
+            background: var(--temple-bright-red);
+            color: #ffffff;
+            border: 1px solid var(--gold-main);
+        }
+
+        .card-icon {
+            font-size: 1.4rem;
+        }
+
+        /* 關卡內容文字 */
+        .card-body {
+            z-index: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .unlocked .card-title {
+            color: #fff2a3;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        .card-status {
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .unlocked .card-status {
+            color: #2ecc71;
+        }
+
+        /* 未解鎖 (Locked) 灰色石雕關卡樣式 */
+        .quest-card.locked {
+            background: linear-gradient(145deg, #1d1d22 0%, #121215 100%);
+            border: 1.5px solid var(--locked-gray);
+            cursor: not-allowed;
+            opacity: 0.7;
+            filter: grayscale(80%);
+        }
+
+        .locked .week-badge {
+            background: #333;
+            color: #888;
+            border: 1px solid #555;
+        }
+
+        .locked .card-title {
+            color: #888888;
+        }
+
+        .locked .card-status {
+            color: #e74c3c;
+        }
+
+        .quest-card.locked:hover {
+            transform: translateY(-2px);
+            opacity: 0.85;
+            border-color: #777;
+        }
+
+        /* 未解鎖浮水印背景圖標 */
+        .lock-watermark {
+            position: absolute;
+            right: -10px;
+            bottom: -15px;
+            font-size: 4.5rem;
+            opacity: 0.08;
+            pointer-events: none;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .quest-card.locked:hover .lock-watermark {
+            opacity: 0.15;
+            transform: scale(1.1) rotate(-10deg);
+        }
+
+        /* 頁尾宮廟風格裝飾 */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #7a6b6b;
+            font-size: 0.85rem;
+            border-top: 1px dashed rgba(241, 196, 15, 0.2);
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        footer p {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景金輝顆粒懸浮動畫容器 -->
+    <div class="sparkles-container" id="sparkles"></div>
+
+    <div class="main-container">
+        <!-- 頂部對聯裝飾 -->
+        <div class="couplet-banner">
+            <span class="cloud-icon">☁️</span>
+            <span>網 頁 修 煉 · 關 關 過 斬</span>
+            <span class="cloud-icon">☁️</span>
+        </div>
+
+        <!-- 畫面正中央：大頭貼與名字區塊 -->
+        <header class="header-section">
+            <div class="avatar-wrapper">
+                <!-- 光暈背景 -->
+                <div class="avatar-aura"></div>
+                
+                <!-- 左右燈籠飾品 -->
+                <div class="lantern lantern-left">吉</div>
+                <div class="lantern lantern-right">祥</div>
+
+                <!-- 大頭貼 (預設為假圖片，後續可更換 src) -->
+                <div class="avatar-img-container">
+                    <img class="avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="學生大頭貼" onerror="this.src='https://placehold.co/150x150/8b0000/ffffff?text=學生頭像'">
+                </div>
+            </div>
+
+            <!-- 學生姓名與標題 -->
+            <h1 class="site-title">神明加持 · 網頁修煉錄</h1>
+            <p class="site-subtitle">網頁程式設計 · 廟會風格單頁作品集</p>
+            <div class="student-info">
+                👤 學生姓名：張小明 | 🆔 學號：11200001
+            </div>
+        </header>
+
+        <!-- 下方 16 個按鈕關卡 (Grid 排版) -->
+        <main class="quest-grid">
+            
+            <!-- 按鈕 1 (已解鎖) -->
+            <a href="w1/index.html" class="quest-card unlocked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 01</span>
+                    <span class="card-icon">📜</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 1 - 數位名片</h2>
+                    <div class="card-status">
+                        <span>✨ 已完成任務 (點擊進入)</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 按鈕 2 (已解鎖) -->
+            <a href="w2/index.html" class="quest-card unlocked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 02</span>
+                    <span class="card-icon">🍜</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 2 - 今天吃甚麼?</h2>
+                    <div class="card-status">
+                        <span>✨ 已完成任務 (點擊進入)</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 按鈕 3 ~ 16 (未解鎖 - 灰色鎖頭狀態) -->
+            <!-- Week 3 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 03</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 3 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 4 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 04</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 4 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 5 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 05</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 5 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 6 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 06</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 6 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 7 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 07</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 7 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 8 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 08</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 8 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 9 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 09</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 9 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 10 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 10</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 10 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 11 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 11</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 11 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 12 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 12</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 12 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 13 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 13</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 13 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 14 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 14</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 14 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 15 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 15</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 15 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+            <!-- Week 16 -->
+            <div class="quest-card locked">
+                <div class="card-header">
+                    <span class="week-badge">WEEK 16</span>
+                    <span class="card-icon">🔒</span>
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title">Week 16 - 尚未解鎖</h2>
+                    <div class="card-status">
+                        <span>⛔ 關卡封印中</span>
+                    </div>
+                </div>
+                <div class="lock-watermark">🔒</div>
+            </div>
+
+        </main>
+
+        <!-- 頁尾聲明與版權 -->
+        <footer>
+            <p>🏮 網頁程式設計課程作品集入口網站 🏮</p>
+            <p>© 2026 廟會修煉錄 - 保留一切聖意</p>
+        </footer>
+    </div>
+
+    <script>
+        // 動態生成飄浮金輝粒子腳本
+        document.addEventListener('DOMContentLoaded', () => {
+            const sparklesContainer = document.getElementById('sparkles');
+            const sparkleCount = 25;
+
+            for (let i = 0; i < sparkleCount; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                
+                // 隨機尺寸、位置與動畫延遲
+                const size = Math.random() * 6 + 2;
+                sparkle.style.width = `${size}px`;
+                sparkle.style.height = `${size}px`;
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.animationDuration = `${Math.random() * 8 + 4}s`;
+                sparkle.style.animationDelay = `${Math.random() * 5}s`;
+
+                sparklesContainer.appendChild(sparkle);
+            }
+        });
+    </script>
+</body>
+</html>
