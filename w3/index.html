@@ -1,1 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神明有旨 ‧ 宮廟風格迷因產生器</title>
 
+    <!-- 1. 引入 Google Fonts 廟會特色字體 (Zhi Mang Xing 行書字體 & Noto Serif TC 思源宋體) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+
+    <!-- 2. 引入 Tailwind CSS CDN 用於快速響應式排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 3. 引入 html2canvas 庫（用於實現畫布截圖下載功能，免後端） -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- 4. 自定義宮廟視覺樣式 -->
+    <style>
+        /* 宮廟背景與主題顏色定義 */
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: #1a0505;
+            background-image: 
+                radial-gradient(#d32f2f 1px, transparent 1px), 
+                radial-gradient(#ffd700 1px, #1a0505 1px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: #fff8e7;
+        }
+
+ 
+            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 50%, #880e4f 100%);
+            border: 2px solid #ffd700;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.4);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .temple-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #d32f2f 0%, #f44336 50%, #b71c1c 100%);
+        }
+        /* 滑桿客製化樣式 */
+        input[type=range] {
+            accent-color: #ffd700;
+        }
+
+        /* 迷因圖片上的文字雙層厚黑邊框（確保在任何背景圖片上都超清晰） */
+        .meme-text-overlay {
+            color: #ffffff;
+            font-weight: 900;
+            text-shadow: 
+                -3px -3px 0 #000,         /* 標題書法體特效 */
+        .calligraphy-font {
+            font-family: 'Zhi Mang Xing', cursive;
+        }
+
+        /* 金屬與金色文字邊框特效 */
+        .gold-border {
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .gold-text {
+            color: #ffd700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.7), 2px 2px 0px #800000;
+        }
+
+        /* 廟會霓虹按鈕效果 */
+        .temple-btn {
+
+        .temple-btn:active {
+            transform: translateY(1px);
+        }
+
+                 3px -3px 0 #000,
+                -3px  3px 0 #000,
+                 3px  3px 0 #000,
+                -4px  0px 0 #000,
+                 4px  0px 0 #000,
+                 0px -4px 0 #000,
+                 0px  4px 0 #000,
+                 0 0 10px rgba(0,0,0,0.9);
+            word-break: break-word;
+            line-height: 1.2;
+            user-select: none;
+        }
+
+        /* 廟會燈籠閃爍動畫 */
+        @keyframes lantern-glow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 10px #ff3300); }
+        }
+
+        .lantern-anim {
+            animation: lantern-glow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-3 md:p-6 flex flex-col justify-between">
+
+    <!-- 【頂部廟會風格牌樓標題】 -->
+    <header class="max-w-6xl mx-auto w-full text-center mb-6">
+        <div class="relative bg-gradient-to-r from-red-950 via-red-900 to-red-950 p-4 md:p-6 rounded-xl gold-border mb-2 overflow-hidden">
+            <!-- 裝飾花紋圖騰 -->
+            <div class="absolute left-2 top-2 text-2xl md:text-4xl opacity-80 lantern-anim">🏮</div>
+            <div class="absolute right-2 top-2 text-2xl md:text-4xl opacity-80 lantern-anim">🏮</div>
+
+            <p class="text-xs md:text-sm tracking-widest text-amber-300 font-bold mb-1">【 歲次丙午年 ‧ 宮廟指定條款 】</p>
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-black gold-text tracking-wider calligraphy-font">
+                卍 聖誕千秋 ‧ 梗圖大吉 卍
+            </h1>
+            <p class="text-xs md:text-base text-red-200 mt-2">
+                萬神加持 ‧ 免費加字 ‧ 一鍵顯靈下載
+            </p>
+        </div>
+    </header>
+
+    <!-- 【主要內容區域】：採用 RWD 排版，電腦版左右分欄，手機版上下疊加 -->
+    <main class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start flex-grow">
+
+        <!-- ===== 左側：控制面板區 (5 欄位) ===== -->
+        <section class="lg:col-span-5 bg-red-950/90 backdrop-blur border-2 border-amber-500/60 p-5 rounded-2xl shadow-2xl space-y-5">
+            <h2 class="text-xl font-bold text-amber-300 border-b-2 border-amber-500/40 pb-2 flex items-center gap-2">
+                <span>⛩️</span> 迷因開光控制台
+            </h2>
+
+            <!-- 1. 本機圖片上傳 -->
+            <div>
+                <label class="block text-amber-200 font-bold mb-2 text-sm md:text-base">
+                    1. 選擇底圖（開啟電腦/手機圖片）：
+                </label>
+                <!-- 使用 type="file" 與 accept="image/*" 限制只能上傳圖片，完全避開 CORS 問題 -->
+                <label class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-amber-400/60 rounded-xl cursor-pointer bg-red-900/40 hover:bg-red-900/80 transition-colors">
+                    <div class="flex flex-col items-center justify-center pt-2 pb-2">
+                        <span class="text-2xl mb-1">📸</span>
+                        <p class="text-xs md:text-sm text-amber-100 font-semibold">點擊此處或拖曳圖片至此</p>
+                        <p class="text-xs text-amber-300/70">支援 JPG, PNG, WEBP 等格式</p>
+                    </div>
+                    <input id="imageUploader" type="file" accept="image/*" class="hidden" />
+                </label>
+            </div>
+
+            <!-- 2. 上方與下方文字輸入框 -->
+            <div class="space-y-3">
+                <div>
+                    <label for="topTextInput" class="block text-amber-200 font-bold mb-1 text-sm">
+                        2. 上方文字 (Top Text)：
+                    </label>
+                    <input type="text" id="topTextInput" value="神明指示：" 
+                        placeholder="請輸入上方標題..." 
+                        class="w-full px-3 py-2 bg-black/50 border border-amber-500/50 rounded-lg text-amber-100 placeholder-red-300/50 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                </div>
+
+                <div>
+                    <label for="bottomTextInput" class="block text-amber-200 font-bold mb-1 text-sm">
+                        3. 下方文字 (Bottom Text)：
+                    </label>
+                    <input type="text" id="bottomTextInput" value="明天直接放假！" 
+                        placeholder="請輸入下方內文..." 
+                        class="w-full px-3 py-2 bg-black/50 border border-amber-500/50 rounded-lg text-amber-100 placeholder-red-300/50 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                </div>
+            </div>
+
+            <!-- 3. 文字樣式與籤詩範本按鈕 -->
+            <div>
+                <span class="block text-amber-200 font-bold mb-2 text-sm">4. 靈感靈籤（快速套用文字）：</span>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button type="button" class="preset-btn py-1.5 px-2 bg-amber-950 hover:bg-amber-800 border border-amber-500/40 rounded text-amber-200 transition">
+                        🙏 退散！小人退散！
+                    </button>
+                    <button type="button" class="preset-btn py-1.5 px-2 bg-amber-950 hover:bg-amber-800 border border-amber-500/40 rounded text-amber-200 transition">
+                        🏮 宮廟提醒：記得吃飯
+                    </button>
+                    <button type="button" class="preset-btn py-1.5 px-2 bg-amber-950 hover:bg-amber-800 border border-amber-500/40 rounded text-amber-200 transition">
+                        💥 聖旨到：加班無罪
+                    </button>
+                    <button type="button" class="preset-btn py-1.5 px-2 bg-amber-950 hover:bg-amber-800 border border-amber-500/40 rounded text-amber-200 transition">
+                        ✨ 財神降臨：今晚發財
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. 滑桿微調區 (FontSize, TopPos, BottomPos) -->
+            <div class="space-y-4 pt-2 border-t border-amber-500/30">
+                <!-- 文字大小滑桿 -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-amber-200 mb-1">
+                        <span>🔤 文字大小 (Font Size)</span>
+                        <span id="fontSizeVal">36px</span>
+                    </div>
+                    <input type="range" id="fontSizeSlider" min="16" max="72" value="36" class="w-full cursor-pointer h-2 bg-red-900 rounded-lg">
+                </div>
+
+                <!-- 上方文字垂直位置滑桿 -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-amber-200 mb-1">
+                        <span>⬆️ 上方文字垂直位置</span>
+                        <span id="topPosVal">5%</span>
+                    </div>
+                    <input type="range" id="topPosSlider" min="0" max="40" value="5" class="w-full cursor-pointer h-2 bg-red-900 rounded-lg">
+                </div>
+
+                <!-- 下方文字垂直位置滑桿 -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold text-amber-200 mb-1">
+                        <span>⬇️ 下方文字垂直位置</span>
+                        <span id="bottomPosVal">5%</span>
+                    </div>
+                    <input type="range" id="bottomPosSlider" min="0" max="40" value="5" class="w-full cursor-pointer h-2 bg-red-900 rounded-lg">
+                </div>
+
+                <!-- 文字顏色選擇 -->
+                <div>
+                    <label class="block text-xs font-bold text-amber-200 mb-1">🎨 文字顏色：</label>
+                    <div class="flex gap-2">
+                        <button type="button" data-color="#ffffff" class="color-btn w-7 h-7 rounded-full bg-white border-2 border-amber-400 focus:scale-110 transition"></button>
+                        <button type="button" data-color="#ffd700" class="color-btn w-7 h-7 rounded-full bg-yellow-400 border-2 border-amber-400 focus:scale-110 transition"></button>
+                        <button type="button" data-color="#ff3333" class="color-btn w-7 h-7 rounded-full bg-red-500 border-2 border-amber-400 focus:scale-110 transition"></button>
+                        <button type="button" data-color="#00ffff" class="color-btn w-7 h-7 rounded-full bg-cyan-400 border-2 border-amber-400 focus:scale-110 transition"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 一鍵下載按鈕 -->
+            <div class="pt-2">
+                <button id="downloadBtn" class="temple-btn w-full py-3.5 px-4 rounded-xl text-amber-100 font-extrabold text-lg tracking-wider flex items-center justify-center gap-2">
+                    <span>🉐</span>
+                    <span>神明保佑 ‧ 下載迷因</span>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ===== 右側：迷因即時預覽區 (7 欄位) ===== -->
+        <section class="lg:col-span-7 flex flex-col items-center">
+            <div class="w-full bg-red-950/80 border-2 border-amber-500/60 p-4 rounded-2xl shadow-2xl flex flex-col items-center">
+                
+                <div class="w-full flex justify-between items-center mb-3">
+                    <span class="text-sm font-bold text-amber-300">🖼️ 即時顯靈預覽 (Preview)</span>
+                    <span class="text-xs text-amber-200/70">可直接下載高解析度檔</span>
+                </div>
+
+                <!-- 關鍵截圖區塊 (Meme Capture Box) -->
+                <!-- html2canvas 會將這個 id="memeContainer" 的 DIV 整塊轉換成圖片 -->
+                <div id="memeContainer" class="relative w-full max-w-[500px] aspect-square bg-black rounded-lg overflow-hidden flex items-center justify-center border-4 border-amber-500/80 shadow-inner select-none">
+                    
+                    <!-- 底圖 (預設顯示神明繪圖 placeholder) -->
+                    <img id="memeImage" src="https://placehold.co/600x600/800000/ffd700?text=%E8%AB%8B%E4%B8%8A%E5%82%B3%E5%BA%95%E5%9C%96%0A(Click+to+Upload)" 
+                         alt="Meme Background" 
+                         class="w-full h-full object-contain pointer-events-none" />
+
+                    <!-- 上方疊加文字 -->
+                    <div id="topTextOverlay" class="meme-text-overlay absolute w-11/12 text-center left-1/2 -translate-x-1/2 pointer-events-none" style="top: 5%;">
+                        神明指示：
+                    </div>
+
+                    <!-- 下方疊加文字 -->
+                    <div id="bottomTextOverlay" class="meme-text-overlay absolute w-11/12 text-center left-1/2 -translate-x-1/2 pointer-events-none" style="bottom: 5%;">
+                        明天直接放假！
+                    </div>
+                </div>
+
+                <p class="text-xs text-amber-300/80 mt-3 text-center">
+                    💡 提示：若要在手機上記錄或分享，請直接點擊上方【下載迷因】按鈕即可儲存成 PNG 圖片。
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 【頁尾版權】 -->
+    <footer class="max-w-6xl mx-auto w-full text-center mt-8 pt-4 border-t border-amber-500/30 text-xs text-amber-200/60">
+        <p>© 歲次丙午宮廟迷因產生器 - 誠心祈求 ‧ 梗圖大吉</p>
+    </footer>
+
+
+    <!-- ===== JavaScript 邏輯控制區 ===== -->
+    <script>
+        // 等待 HTML 頁面載入完成後執行
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. 取得所有需要的 DOM 元素 (HTML 控制物件)
+            const imageUploader = document.getElementById('imageUploader');
+            const memeImage = document.getElementById('memeImage');
+            
+            const topTextInput = document.getElementById('topTextInput');
+            const bottomTextInput = document.getElementById('bottomTextInput');
+            
+            const topTextOverlay = document.getElementById('topTextOverlay');
+            const bottomTextOverlay = document.getElementById('bottomTextOverlay');
+
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const topPosSlider = document.getElementById('topPosSlider');
+            const bottomPosSlider = document.getElementById('bottomPosSlider');
+
+            const fontSizeVal = document.getElementById('fontSizeVal');
+            const topPosVal = document.getElementById('topPosVal');
+            const bottomPosVal = document.getElementById('bottomPosVal');
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            const memeContainer = document.getElementById('memeContainer');
+
+            // 2. 本機圖片上傳邏輯 (使用 FileReader 避免 CORS 跨網域圖片加載錯誤)
+            imageUploader.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // 建立 HTML5 FileReader 物件
+                    const reader = new FileReader();
+
+                    // 當檔案讀取完成時觸發
+                    reader.onload = function(event) {
+                        // 將讀取到的 DataURL 設定給 <img> 的 src 屬性
+                        memeImage.src = event.target.result;
+                    };
+
+                    // 以 DataURL 格式讀取圖檔
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 3. 文字即時更新邏輯 (輸入框監聽)
+            topTextInput.addEventListener('input', () => {
+                topTextOverlay.textContent = topTextInput.value || '';
+            });
+
+            bottomTextInput.addEventListener('input', () => {
+                bottomTextOverlay.textContent = bottomTextInput.value || '';
+            });
+
+            // 4. 滑桿微調控制 (字體大小與上下位置)
+            fontSizeSlider.addEventListener('input', (e) => {
+                const size = e.target.value + 'px';
+                fontSizeVal.textContent = size;
+                topTextOverlay.style.fontSize = size;
+                bottomTextOverlay.style.fontSize = size;
+            });
+
+            topPosSlider.addEventListener('input', (e) => {
+                const pos = e.target.value + '%';
+                topPosVal.textContent = pos;
+                topTextOverlay.style.top = pos;
+            });
+
+            bottomPosSlider.addEventListener('input', (e) => {
+                const pos = e.target.value + '%';
+                bottomPosVal.textContent = pos;
+                bottomTextOverlay.style.bottom = pos;
+            });
+
+            // 5. 文字顏色切換邏輯
+            const colorBtns = document.querySelectorAll('.color-btn');
+            colorBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const color = btn.getAttribute('data-color');
+                    topTextOverlay.style.color = color;
+                    bottomTextOverlay.style.color = color;
+                });
+            });
+
+            // 6. 籤詩靈感快速按鈕邏輯
+            const presetBtns = document.querySelectorAll('.preset-btn');
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const text = btn.textContent.trim();
+                    // 將籤詩拆成上下兩句套用
+                    const parts = text.split('：');
+                    if (parts.length > 1) {
+                        topTextInput.value = parts[0] + '：';
+                        bottomTextInput.value = parts[1];
+                    } else {
+                        topTextInput.value = '神明指示：';
+                        bottomTextInput.value = text;
+                    }
+                    // 手動觸發 input 事件以同步更新畫面
+                    topTextInput.dispatchEvent(new Event('input'));
+                    bottomTextInput.dispatchEvent(new Event('input'));
+                });
+            });
+
+            // 7. 一鍵下載圖檔邏輯 (使用 html2canvas 庫)
+            downloadBtn.addEventListener('click', () => {
+                // 更改按鈕文字提示正在處理中
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<span>⏳</span><span>神力加持中...</span>';
+                downloadBtn.disabled = true;
+
+                // 呼叫 html2canvas 轉換指定區塊 (#memeContainer)
+                html2canvas(memeContainer, {
+                    scale: 2, // 提高解析度 (2倍清晰度)
+                    useCORS: true, // 允許跨網域載入（若有）
+                    backgroundColor: null // 保持透明底色
+                }).then(canvas => {
+                    // 建立一個隱藏的 <a> 標籤觸發自動下載
+                    const link = document.createElement('a');
+                    link.download = 'my-meme.png'; // 下載的預設檔案名稱
+                    link.href = canvas.toDataURL('image/png'); // 轉換成 PNG 圖片格式 Base64
+                    link.click();
+
+                    // 恢復按鈕原本樣式
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                }).catch(err => {
+                    console.error('下載圖片失敗:', err);
+                    alert('圖片產生失敗，請再試一次！');
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                });
+            });
+
+            // 初始化設定預設文字大小
+            topTextOverlay.style.fontSize = fontSizeSlider.value + 'px';
+            bottomTextOverlay.style.fontSize = fontSizeSlider.value + 'px';
+        });
+    </script>
+</body>
+</html>
