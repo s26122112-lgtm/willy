@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>個人數位名片</title>
+  
+  <!-- CSS 樣式區塊 -->
+  <style>
+    /* 全域設定：頁面絕對置中 */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      /* 馬卡龍漸層背景 */
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    /* 名片主體：現代感微陰影卡片 */
+    .card {
+      background-color: #ffffff;
+      width: 300px;
+      padding: 40px 30px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05),
+                  0 20px 48px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* 圓形大頭貼 */
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #ffdde1;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+    }
+
+    /* 名字與自我介紹 */
+    .name {
+      margin: 0 0 8px 0;
+      font-size: 1.5rem;
+      color: #4a4a4a;
+      font-weight: 600;
+    }
+
+    .bio {
+      margin: 0 0 25px 0;
+      font-size: 0.95rem;
+      color: #7a7a7a;
+      line-height: 1.5;
+    }
+
+    /* 馬卡龍單一聯絡按鈕 */
+    .btn-main {
+      display: block;
+      padding: 14px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #ffffff;
+      background: linear-gradient(135deg, #ffb7b2 0%, #a2e8dd 100%);
+      box-shadow: 0 6px 15px rgba(255, 183, 178, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .btn-main:hover {
+      opacity: 0.92;
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(255, 183, 178, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 名片內容區塊 -->
+  <div class="card">
+    <img src="https://i.postimg.cc/QCj66Rkz/BBD507AA-387F-4191-A9DE-A14C48B9405D.png" alt="個人大頭貼" class="avatar">
+    <h1 class="name">廷ㄟ </h1>
+    <p class="bio">✨ 喜歡廟會 ✨
+    <a href="mailto:your-email@example.com?subject=來自數位名片的聯繫" class="btn btn-main">
+      💬 與我聯繫 (Contact Me)
+    </a>
+  </div>
+
+</body>
+</html>
